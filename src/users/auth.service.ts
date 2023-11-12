@@ -25,7 +25,7 @@ export class AuthService {
     const result = salt + '.' + hash.toString('hex');
 
     // create a new user and save it
-    const user = await this.usersService.create({ email, password: result });
+    const user = await this.usersService.create(email, result);
 
     return user;
   }
