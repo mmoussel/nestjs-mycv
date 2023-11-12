@@ -22,10 +22,10 @@ export class AuthService {
 
     const hash = (await scrypt(password, salt, 32)) as Buffer;
 
-    const result = salt + '.' + hash.toString('hex');
+    const hashedPasswordWithSalt = salt + '.' + hash.toString('hex');
 
     // create a new user and save it
-    const user = await this.usersService.create(email, result);
+    const user = await this.usersService.create(email, hashedPasswordWithSalt);
 
     return user;
   }
@@ -35,7 +35,7 @@ export class AuthService {
     const [user] = await this.usersService.find(email);
 
     if (!user) {
-      throw new BadRequestException('Password is not correct');
+      throw new BadRequestException('Invalid Credential');
     }
 
     const [salt, storedHash] = user.password.split('.');
@@ -44,7 +44,7 @@ export class AuthService {
 
     // check password
     if (storedHash !== hash.toString('hex')) {
-      throw new BadRequestException('Password is not correct');
+      throw new BadRequestException('Invalid Credential');
     }
 
     // return user
