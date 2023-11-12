@@ -13,7 +13,11 @@ export class UsersService {
     return this.repo.save(user);
   }
 
-  findOne(id: number) {
+  findOne(id: number | null) {
+    if (!id) {
+      return null;
+    }
+
     return this.repo.findOneBy({ id });
   }
 
